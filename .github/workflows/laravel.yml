@@ -40,3 +40,7 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan test
+    - name: Run PHPStan
+      run: composer run phpstan
+    - name: Run Laravel Pint
+      run: ./vendor/bin/pint --test
