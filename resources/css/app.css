@@ -9,4 +9,5 @@
     --white-color: #ffffff;
 
     font-family: 'Poppins', serif;
+    color: var(--black-color);
 }

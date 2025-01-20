@@ -4,10 +4,10 @@
     "scripts": {
         "build": "vue-tsc && vite build && vite build --ssr",
         "dev": "vite",
-        "lint": "eslint . --ext .js,.ts,.vue --ignore-path .gitignore --fix",
-        "lint-check": "eslint . --ext .js,.ts,.vue --ignore-path .gitignore --max-warnings 1",
-        "prettier": "prettier --write .",
-        "prettier-check": "prettier --check ."
+        "lint": "eslint resources --ext .js,.ts,.vue --ignore-path .gitignore --fix",
+        "lint-check": "eslint resources --ext .js,.ts,.vue --ignore-path .gitignore --max-warnings 1",
+        "prettier": "prettier --write resources",
+        "prettier-check": "prettier --check resources"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0.0",
@@ -36,5 +36,9 @@
     },
     "jshintConfig": {
         "esversion": 11
+    },
+    "dependencies": {
+        "@primevue/themes": "^4.2.5",
+        "primevue": "^4.2.5"
     }
 }

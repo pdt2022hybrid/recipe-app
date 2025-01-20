@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recipe_categories', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id');
+            $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
