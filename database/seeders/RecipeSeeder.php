@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Recipe;
 use App\Models\RecipeCategory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RecipeSeeder extends Seeder
