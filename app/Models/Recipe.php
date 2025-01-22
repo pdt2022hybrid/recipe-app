@@ -25,4 +25,5 @@ class Recipe extends Model
     {
         return $this->belongsTo(RecipeCategory::class);
     }
+    // TODO: belongs to user
 }
