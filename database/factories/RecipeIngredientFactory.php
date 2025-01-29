@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\RecipeIngredient;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RecipeIngredient>
+ * @extends Factory<RecipeIngredient>
  */
 class RecipeIngredientFactory extends Factory
 {
@@ -17,7 +18,8 @@ class RecipeIngredientFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'description' => $this->faker->word(),
+            'amount' => $this->faker->words(3, true),
         ];
     }
 }

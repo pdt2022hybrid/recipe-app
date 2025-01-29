@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
-use Database\Factories\RecipeIngredientFactory;
+use Database\Factories\RecipeStepFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class RecipeIngredient extends Model
+class RecipeStep extends Model
 {
-    /** @use HasFactory<RecipeIngredientFactory> */
+    /** @use HasFactory<RecipeStepFactory> */
     use HasFactory, HasUlids, SoftDeletes;
 
     protected $fillable = [
-        'amount',
-        'unit',
+        'step_number',
+        'title',
+        'text',
     ];
 
     /**
@@ -25,13 +26,5 @@ class RecipeIngredient extends Model
     public function recipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class);
-    }
-
-    /**
-     * @return BelongsTo<Ingredient, $this>
-     */
-    public function ingredient(): BelongsTo
-    {
-        return $this->belongsTo(Ingredient::class);
     }
 }

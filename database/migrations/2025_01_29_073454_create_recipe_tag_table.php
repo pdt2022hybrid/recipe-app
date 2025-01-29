@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\IngredientCategory;
+use App\Models\Recipe;
+use App\Models\Tag;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,18 +13,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ingredients', function (Blueprint $table) {
-            $table->ulid('id')->primary();
-
-            $table->string('name');
-
-            $table->foreignIdFor(IngredientCategory::class, 'category_id')
+        Schema::create('recipe_tag', function (Blueprint $table) {
+            $table->foreignIdFor(Tag::class)
                 ->index()
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->timestamps();
-            $table->softDeletes();
+            $table->foreignIdFor(Recipe::class)
+                ->index()
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->primary(['tag_id', 'recipe_id']);
         });
     }
 
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ingredients');
+        Schema::dropIfExists('recipe_tag');
     }
 };

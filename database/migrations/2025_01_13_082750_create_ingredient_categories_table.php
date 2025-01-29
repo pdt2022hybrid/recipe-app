@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\IngredientCategory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,16 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ingredients', function (Blueprint $table) {
+        Schema::create('ingredient_categories', function (Blueprint $table) {
             $table->ulid('id')->primary();
-
             $table->string('name');
-
-            $table->foreignIdFor(IngredientCategory::class, 'category_id')
-                ->index()
-                ->constrained()
-                ->cascadeOnDelete();
-
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ingredients');
+        Schema::dropIfExists('ingredient_categories');
     }
 };

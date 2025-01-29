@@ -21,6 +21,11 @@ class DatabaseSeeder extends Seeder
         //        ]);
 
         $this->call([
+            UserSeeder::class,
+            TagSeeder::class,
+            IngredientCategorySeeder::class,
+            IngredientSeeder::class,
+            RecipeCategorySeeder::class,
             RecipeSeeder::class,
         ]);
     }

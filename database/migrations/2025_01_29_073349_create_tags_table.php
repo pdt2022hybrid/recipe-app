@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recipe_categories', function (Blueprint $table) {
-            $table->ulid('id');
+        Schema::create('tags', function (Blueprint $table) {
+            $table->ulid('id')->primary();
+            $table->string('slug')->index();
             $table->string('name');
+
             $table->timestamps();
             $table->softDeletes();
         });
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recipe_categories');
+        Schema::dropIfExists('tags');
     }
 };
