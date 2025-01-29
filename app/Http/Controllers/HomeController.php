@@ -17,7 +17,7 @@ class HomeController extends Controller
                 ->with('recipes', function (Relation $query) {
                     $query
                         ->select('id', 'name', 'recipe_category_id')
-                        ->limit(5);
+                        ->limit(25);
                 })
                 ->withCount('recipes')
                 ->get(),

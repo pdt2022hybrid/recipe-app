@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import Layout from '@/Layouts/Layout.vue';
-import Button from 'primevue/button';
+import AutoComplete from 'primevue/autocomplete';
+import Tab from 'primevue/tab';
+import TabList from 'primevue/tablist';
+import TabPanel from 'primevue/tabpanel';
+import TabPanels from 'primevue/tabpanels';
+import Tabs from 'primevue/tabs';
 
 import { RecipeCategory } from 'models';
 import { defineProps, onMounted, ref } from 'vue';
@@ -14,20 +19,6 @@ const selectedCategoryId = ref<string | null>(null);
 onMounted(() => {
     selectedCategoryId.value = props.recipe_categories[0].id;
 });
-
-const selected = (categoryId: string) => {
-    return selectedCategoryId.value == categoryId;
-};
-
-const select = (categoryId: string) => {
-    selectedCategoryId.value = categoryId;
-};
-
-const selectedCategory = (): undefined | RecipeCategory => {
-    return props.recipe_categories.find(
-        (category) => category.id == selectedCategoryId.value,
-    );
-};
 </script>
 
 <template>
@@ -50,19 +41,36 @@ const selectedCategory = (): undefined | RecipeCategory => {
             </div>
         </section>
         <section class="recipes">
-            <div class="sidebar">
-                <Button
-                    v-for="category in props.recipe_categories"
-                    v-bind:key="category.id"
-                    :severity="selected(category.id) ? 'primary' : 'secondary'"
-                    @click="select(category.id)"
-                >
-                    {{ category.name }}
-                </Button>
+            <div class="topbar">
+                <div class="search-wrapper">
+                    <auto-complete />
+                </div>
+
+                <div class="sort-select-wrapper"></div>
+
+                <div class="tabs">
+                    <Tabs value="0" scrollable>
+                        <TabList>
+                            <Tab
+                                v-for="tab in recipe_categories"
+                                :key="tab.id"
+                                :value="tab.name"
+                            >
+                                {{ tab.name }}
+                            </Tab>
+                        </TabList>
+                        <TabPanels>
+                            <TabPanel
+                                v-for="tab in recipe_categories"
+                                :key="tab.id"
+                                :value="tab.name"
+                            >
+                                <p class="m-0">{{ tab.name }}</p>
+                            </TabPanel>
+                        </TabPanels>
+                    </Tabs>
+                </div>
             </div>
-            <pre class="bg-red-300">
-                {{ selectedCategory()?.recipes }}
-            </pre>
         </section>
     </Layout>
 </template>
@@ -110,4 +118,36 @@ const selectedCategory = (): undefined | RecipeCategory => {
             @apply rounded-2xl
             @apply shadow-lg
             @apply py-3
+
+            &[data-p-severity="primary"]
+                @apply bg-primary
+
+    .recipes-main-content
+        @apply grid grid-cols-4 auto-rows-min
+        @apply gap-8
+
+        .search-wrapper
+            @apply col-span-2
+
+        .sort-select-wrapper
+            @apply col-span-1
+
+        pre
+            @apply col-span-3
+
+        .card
+            @apply grid grid-rows-1
+            @apply bg-red-200
+            @apply rounded-3xl border-black border
+            @apply py-2 px-4
+            h3
+                @apply text-2xl font-bold
+
+        .card.large-col-span
+            @apply col-span-2
+            grid-template-columns: 40% 60%
+
+        .card.small-col-span
+            @apply col-span-1
+            grid-template-columns: 40% 60%
 </style>
