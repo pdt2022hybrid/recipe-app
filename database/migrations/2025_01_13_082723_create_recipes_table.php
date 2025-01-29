@@ -14,13 +14,20 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->ulid('id');
+
             $table->string('name');
+            $table->text('description');
+
+            $table->text('instructions');
+
+            $table->integer('prep_time_in_min');
+            $table->integer('portions');
+
             $table->foreignIdFor(RecipeCategory::class)->index();
             $table->timestamps();
             $table->softDeletes();
         });
     }
-
     /**
      * Reverse the migrations.
      */
