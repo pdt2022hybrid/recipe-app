@@ -20,6 +20,7 @@ class RecipeIngredientFactory extends Factory
         return [
             'description' => $this->faker->word(),
             'amount' => $this->faker->words(3, true),
+            'unit' => $this->faker->randomElement(['g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup']),
         ];
     }
 }

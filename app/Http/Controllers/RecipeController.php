@@ -15,7 +15,8 @@ class RecipeController extends Controller
                 ->select('id', 'name', 'description', 'created_at')
                 ->with([
                     'category:id,name',
-                    'steps:id,title,description'
+                    'steps:id,title,description',
+                    'ingredients:id,name,amount,unit',
                 ])
                 ->findOrFail($recipe_id),
         ]);

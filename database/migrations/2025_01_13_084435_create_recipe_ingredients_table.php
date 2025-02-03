@@ -17,6 +17,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
 
             $table->string('amount');
+            $table->string('unit');
             $table->string('description');
 
             $table->foreignIdFor(Recipe::class)
