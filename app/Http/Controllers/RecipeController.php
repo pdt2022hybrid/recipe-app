@@ -33,9 +33,9 @@ class RecipeController extends Controller
                     'category' => function (Relation $query) {
                         $query->select('id', 'name');
                     },
-//                    'steps' => function (Relation $query) {
-//                        $query->select('id', 'recipe_id', 'description');
-//                    },
+                    'steps' => function (Relation $query) {
+                        $query->select('id', 'recipe_id', 'description');
+                    },
                     'ingredients' => function (Relation $query) {
                         $query->select('id', 'recipe_id', 'ingredient_id', 'amount', 'unit')
                         ->with(['ingredient' => function ($q) {
