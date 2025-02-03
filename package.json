@@ -38,6 +38,7 @@
         "esversion": 11
     },
     "dependencies": {
+        "@primevue/forms": "^4.2.5",
         "@primevue/themes": "^4.2.5",
         "primevue": "^4.2.5"
     }

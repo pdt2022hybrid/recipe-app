@@ -3,11 +3,15 @@
 @tailwind utilities;
 
 :root {
-    --primary-color: #4453A8;
-    --secondary-color: #5665BA;
+    --primary-color: #4453a8;
+    --secondary-color: #5665ba;
     --black-color: #242424;
     --white-color: #ffffff;
 
     font-family: 'Poppins', serif;
     color: var(--black-color);
+}
+
+body {
+    @apply min-h-screen w-full bg-secondary-700;
 }

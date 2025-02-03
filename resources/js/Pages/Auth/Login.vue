@@ -1,98 +1,173 @@
 <script setup lang="ts">
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import LogoSVG from '@/Components/LogoSVG.vue';
+import FocusLayout from '@/Layouts/FocusLayout.vue';
+import { useForm } from '@inertiajs/vue3';
+import { Form } from '@primevue/forms';
+import { Button, InputText, Message, Toast } from 'primevue';
+import { useToast } from 'primevue/usetoast';
+import { reactive } from 'vue';
 
-defineProps<{
-    canResetPassword?: boolean;
-    status?: string;
-}>();
+const toast = useToast();
+
+const initialValues = reactive({
+    email: '',
+});
 
 const form = useForm({
     email: '',
     password: '',
-    remember: false,
 });
 
+const resolver = ({ values }) => {
+    const errors = {};
+
+    if (!values.email) {
+        errors.email = [{ message: 'Email is required.' }];
+    }
+
+    return {
+        errors,
+    };
+};
+
+const onFormSubmit = (event: {
+    valid: boolean;
+    states: {
+        email: { value: string };
+        password: { value: string };
+    };
+}) => {
+    if (event.valid) {
+        form.email = event.states.email.value;
+        form.password = event.states.password.value;
+
+        console.log(form);
+
+        // submit();
+
+        toast.add({
+            severity: 'success',
+            summary: 'Form is submitted.',
+            life: 3000,
+        });
+    }
+};
+
 const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => {
-            form.reset('password');
-        },
-    });
+    form.post(route('login'));
 };
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Log in" />
-
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+    <FocusLayout>
+        <main>
+            <div class="image-div">
+                <img src="../../../assets/img/auth.png" alt="flower image" />
             </div>
+            <div class="form-div-wrapper">
+                <div class="form-div">
+                    <Toast />
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                    <LogoSVG class="logo-svg" />
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400"
-                        >Remember me</span
+                    <Form
+                        v-slot="$form"
+                        :initialValues
+                        :resolver
+                        @submit="onFormSubmit"
+                        class="flex w-full flex-col gap-4 sm:w-56"
                     >
-                </label>
+                        <div class="flex flex-col gap-1">
+                            <label> Email </label>
+                            <InputText
+                                name="email"
+                                type="text"
+                                placeholder="Email"
+                                fluid
+                                id="email"
+                            />
+                            <Message
+                                v-if="$form.email?.invalid"
+                                severity="error"
+                                size="small"
+                                variant="simple"
+                                >{{ $form.email.error?.message }}
+                            </Message>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label> Password </label>
+                            <InputText
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Password"
+                                fluid
+                            />
+                            <Message
+                                v-if="$form.password?.invalid"
+                                severity="error"
+                                size="small"
+                                variant="simple"
+                                >{{ $form.password.error?.message }}
+                            </Message>
+                        </div>
+                        <Button
+                            type="submit"
+                            severity="primary"
+                            label="Submit"
+                        />
+                    </Form>
+                </div>
+                <img
+                    class="vector1"
+                    src="../../../assets/vector1.svg"
+                    alt="vector image"
+                />
+                <img
+                    class="vector2"
+                    src="../../../assets/vector2.svg"
+                    alt="vector image"
+                />
             </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+        </main>
+    </FocusLayout>
 </template>
+
+<style scoped lang="sass">
+main
+    @apply grid grid-rows-1
+    grid-template-columns: 35% 65%
+    height: 1000px
+
+    .image-div
+        img
+            @apply w-full object-cover
+
+    .form-div-wrapper
+        @apply flex items-center justify-center
+
+    .form-div
+        width: 40%
+        @apply flex flex-col items-center justify-center gap-12
+        @apply pb-24
+        @apply text-white
+
+        input, input:hover
+            @apply bg-transparent border-2 border-white text-white
+
+        input::placeholder
+            @apply text-white
+
+        button, button:hover
+            @apply bg-white text-black
+
+.vector1
+    @apply absolute -z-10
+    right: -25rem
+    top: -1rem
+
+.vector2
+    @apply absolute -z-10
+    bottom: -48rem
+    right: -22rem
+</style>
