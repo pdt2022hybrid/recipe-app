@@ -13,7 +13,10 @@ class RecipeController extends Controller
         return Inertia::render('Recipe', [
             'recipe' => Recipe::query()
                 ->select('id', 'name', 'description', 'created_at')
-                ->with('category:id,name')
+                ->with([
+                    'category:id,name',
+                    'steps:id,title,description'
+                ])
                 ->findOrFail($recipe_id),
         ]);
     }
