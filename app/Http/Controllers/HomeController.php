@@ -21,6 +21,8 @@ class HomeController extends Controller
                 })
                 ->withCount('recipes')
                 ->get(),
+
         ]);
+
     }
 }
