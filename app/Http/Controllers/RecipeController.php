@@ -28,8 +28,6 @@ class RecipeController extends Controller
             'recipe' => Recipe::query()
                 ->select('id', 'name', 'description', 'created_at', 'category_id')
                 ->with([
-
-                    //TODO: categ nejde
                     'category' => function (Relation $query) {
                         $query->select('id', 'name');
                     },
@@ -38,7 +36,7 @@ class RecipeController extends Controller
                     },
                     'ingredients' => function (Relation $query) {
                         $query->select('id', 'recipe_id', 'ingredient_id', 'amount', 'unit')
-                        ->with(['ingredient' => function ($q) {
+                        ->with(['ingredient' => function (Relation $q) {
                             $q->select('id', 'name');
                         }]);
                     },
