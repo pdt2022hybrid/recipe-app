@@ -2,7 +2,7 @@
 import LogoSVG from '@/Components/LogoSVG.vue';
 import FocusLayout from '@/Layouts/FocusLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-import { Form } from '@primevue/forms';
+import { Form, FormSubmitEvent } from '@primevue/forms';
 import { Button, InputText, Message, Toast } from 'primevue';
 import { useToast } from 'primevue/usetoast';
 import { reactive } from 'vue';
@@ -30,26 +30,12 @@ const resolver = ({ values }) => {
     };
 };
 
-const onFormSubmit = (event: {
-    valid: boolean;
-    states: {
-        email: { value: string };
-        password: { value: string };
-    };
-}) => {
+const onFormSubmit = (event: FormSubmitEvent) => {
     if (event.valid) {
         form.email = event.states.email.value;
         form.password = event.states.password.value;
 
-        console.log(form);
-
-        // submit();
-
-        toast.add({
-            severity: 'success',
-            summary: 'Form is submitted.',
-            life: 3000,
-        });
+        submit();
     }
 };
 
@@ -75,7 +61,7 @@ const submit = () => {
                         :initialValues
                         :resolver
                         @submit="onFormSubmit"
-                        class="flex w-full flex-col gap-4 sm:w-56"
+                        class="flex w-full flex-col gap-4"
                     >
                         <div class="flex flex-col gap-1">
                             <label> Email </label>
@@ -114,7 +100,7 @@ const submit = () => {
                         <Button
                             type="submit"
                             severity="primary"
-                            label="Submit"
+                            label="Log in"
                         />
                     </Form>
                 </div>
@@ -135,22 +121,23 @@ const submit = () => {
 
 <style scoped lang="sass">
 main
-    @apply grid grid-rows-1
-    grid-template-columns: 35% 65%
-    height: 1000px
+    @apply relative min-h-screen grid grid-rows-1 overflow-hidden grid-cols-1 lg:grid-cols-[50%,50%] xl:grid-cols-[35%,65%]
+
+    //grid-template-columns: 35% 65%
 
     .image-div
+        @apply hidden lg:block
         img
             @apply w-full object-cover
 
     .form-div-wrapper
-        @apply flex items-center justify-center
+        @apply flex items-center justify-center py-12
 
     .form-div
-        width: 40%
         @apply flex flex-col items-center justify-center gap-12
         @apply pb-24
         @apply text-white
+        @apply w-[70%] md:w-[50%] lg:w-[45%]
 
         input, input:hover
             @apply bg-transparent border-2 border-white text-white
@@ -162,9 +149,9 @@ main
             @apply bg-white text-black
 
 .vector1
-    @apply absolute -z-10
-    right: -25rem
-    top: -1rem
+    @apply absolute -z-10 max-w-[200%]
+    @apply right-[-3rem] w-[120%]
+    @apply lg:right-[-25rem] lg:top-[-1rem] lg:w-[110%]
 
 .vector2
     @apply absolute -z-10

@@ -120,7 +120,6 @@ onMounted(() => {
             @apply py-3
 
             &[data-p-severity="primary"]
-                @apply bg-primary
 
     .recipes-main-content
         @apply grid grid-cols-4 auto-rows-min
