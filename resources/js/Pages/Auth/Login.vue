@@ -2,12 +2,9 @@
 import LogoSVG from '@/Components/LogoSVG.vue';
 import FocusLayout from '@/Layouts/FocusLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-import { Form, FormSubmitEvent } from '@primevue/forms';
+import { Form, FormResolverOptions, FormSubmitEvent } from '@primevue/forms';
 import { Button, InputText, Message, Toast } from 'primevue';
-import { useToast } from 'primevue/usetoast';
 import { reactive } from 'vue';
-
-const toast = useToast();
 
 const initialValues = reactive({
     email: '',
@@ -18,11 +15,16 @@ const form = useForm({
     password: '',
 });
 
-const resolver = ({ values }) => {
-    const errors = {};
+const resolver = (e: FormResolverOptions) => {
+    const values = e.values;
+    const errors: { email?: any; password?: any } = {};
 
     if (!values.email) {
         errors.email = [{ message: 'Email is required.' }];
+    }
+
+    if (!values.password) {
+        errors.password = [{ message: 'Password is required.' }];
     }
 
     return {

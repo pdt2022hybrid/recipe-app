@@ -1,20 +1,68 @@
 <script setup lang="ts">
+import RecipeList from '@/Components/RecipeList.vue';
 import Layout from '@/Layouts/Layout.vue';
-import AutoComplete from 'primevue/autocomplete';
-import Tab from 'primevue/tab';
-import TabList from 'primevue/tablist';
-import TabPanel from 'primevue/tabpanel';
-import TabPanels from 'primevue/tabpanels';
-import Tabs from 'primevue/tabs';
-
-import { RecipeCategory } from 'models';
-import { defineProps, onMounted, ref } from 'vue';
+import { Recipe, RecipeCategory } from '@/types/models';
+import { usePage } from '@inertiajs/vue3';
+import axios from 'axios';
+import { InputText } from 'primevue';
+import { computed, defineProps, onMounted, ref } from 'vue';
 
 const props = defineProps<{
     recipe_categories: Array<RecipeCategory>;
 }>();
 
+const searchValue = ref<string>('');
+
 const selectedCategoryId = ref<string | null>(null);
+const selectedCategory = computed(() => {
+    return props.recipe_categories.find(
+        (category) => category.id === selectedCategoryId.value,
+    );
+});
+
+interface Result {
+    results: Recipe[];
+    total: int;
+}
+
+console.log(usePage().props.csrf_token);
+
+interface SearchResults {
+    selected_category: Result;
+    other_categories: Result;
+}
+
+const searchResults = ref<SearchResults>();
+
+function selectCategory(categoryId: string) {
+    selectedCategoryId.value = categoryId;
+}
+
+function search() {
+    const currentSearchValue = searchValue.value;
+
+    setTimeout(() => {
+        if (!currentSearchValue) {
+            return;
+        }
+
+        if (currentSearchValue === searchValue.value) {
+            axios
+                .get(route('api.home.search'), {
+                    params: {
+                        _token: usePage().props.csrf_token,
+                        search: currentSearchValue,
+                        recipe_category: {
+                            id: selectedCategoryId.value,
+                        },
+                    },
+                })
+                .then((response: { data: SearchResults }) => {
+                    searchResults.value = response.data;
+                });
+        }
+    }, 300);
+}
 
 onMounted(() => {
     selectedCategoryId.value = props.recipe_categories[0].id;
@@ -23,55 +71,74 @@ onMounted(() => {
 
 <template>
     <Layout>
-        <section class="hero">
-            <div class="text">
-                <div class="heading">
-                    <h1>
-                        <span> Tajné </span>
-                        <span class="right"> klenoty </span>
-                        <span>od babičky </span>
-                    </h1>
-                </div>
-                <div class="subtext">
-                    <span>Grammy, let’s cook.</span>
-                </div>
-            </div>
-            <div class="image">
-                <img src="../../assets/hero.svg" alt="hero" />
-            </div>
-        </section>
-        <section class="recipes">
+        <!--        <section class="hero">-->
+        <!--            <div class="text">-->
+        <!--                <div class="heading">-->
+        <!--                    <h1>-->
+        <!--                        <span> Tajné </span>-->
+        <!--                        <span class="right"> klenoty </span>-->
+        <!--                        <span>od babičky </span>-->
+        <!--                    </h1>-->
+        <!--                </div>-->
+        <!--                <div class="subtext">-->
+        <!--                    <span>Grammy, let’s cook.</span>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <div class="image">-->
+        <!--                <img src="../../assets/hero.svg" alt="hero" />-->
+        <!--            </div>-->
+        <!--        </section>-->
+        <main>
             <div class="topbar">
-                <div class="search-wrapper">
-                    <auto-complete />
-                </div>
+                <div class="empty-left-corner" />
 
-                <div class="sort-select-wrapper"></div>
+                <div class="main-topbar-content">
+                    <div class="search-wrapper">
+                        <InputText
+                            class="search-input"
+                            placeholder="Vyhľadajte recepty"
+                            v-model="searchValue"
+                            @update:model-value="search()"
+                        />
+                    </div>
 
-                <div class="tabs">
-                    <Tabs value="0" scrollable>
-                        <TabList>
-                            <Tab
-                                v-for="tab in recipe_categories"
-                                :key="tab.id"
-                                :value="tab.name"
-                            >
-                                {{ tab.name }}
-                            </Tab>
-                        </TabList>
-                        <TabPanels>
-                            <TabPanel
-                                v-for="tab in recipe_categories"
-                                :key="tab.id"
-                                :value="tab.name"
-                            >
-                                <p class="m-0">{{ tab.name }}</p>
-                            </TabPanel>
-                        </TabPanels>
-                    </Tabs>
+                    <div class="sort-select-wrapper"></div>
                 </div>
             </div>
-        </section>
+            <div class="content">
+                <div class="categories">
+                    <div
+                        v-for="category in recipe_categories"
+                        :key="category.id"
+                        @click="selectCategory(category.id)"
+                        :class="{
+                            selected: selectedCategoryId === category.id,
+                        }"
+                        class="category-item"
+                    >
+                        {{ category.name }}
+                    </div>
+                </div>
+                <div class="main-content">
+                    <RecipeList
+                        v-if="selectedCategoryId && searchValue == ''"
+                        :recipes="selectedCategory.recipes"
+                    />
+                    <div v-else>
+                        <h3>Results from selected category:</h3>
+                        <RecipeList
+                            v-if="searchResults?.selected_category?.results"
+                            :recipes="searchResults.selected_category.results"
+                        />
+                        <h3>Results from other categories:</h3>
+                        <RecipeList
+                            v-if="searchResults?.other_categories?.results"
+                            :recipes="searchResults.other_categories.results"
+                        />
+                    </div>
+                </div>
+            </div>
+        </main>
     </Layout>
 </template>
 
@@ -101,52 +168,56 @@ onMounted(() => {
     @apply grid grid-cols-2 items-center
     @apply py-2
 
-.recipes
-    background-color: var(--white-color)
+main
+    background-image: linear-gradient(90deg, var(--primary-color), var(--secondary-color))
 
-    @apply grid grid-rows-1
-    grid-template-columns: 20% 80%
+    @apply grid grid-cols-1
+    @apply gap-4
+    @apply px-16
 
-    @apply px-4 py-8
+    .topbar
+        @apply grid grid-cols-5
 
-    .sidebar
-        @apply flex flex-col
-        @apply gap-2
-        @apply px-4
+        & > div
+            @apply px-4
 
-        button
-            @apply rounded-2xl
-            @apply shadow-lg
-            @apply py-3
-
-            &[data-p-severity="primary"]
-
-    .recipes-main-content
-        @apply grid grid-cols-4 auto-rows-min
-        @apply gap-8
-
-        .search-wrapper
-            @apply col-span-2
-
-        .sort-select-wrapper
+        .empty-left-corner
             @apply col-span-1
 
-        pre
-            @apply col-span-3
+        .main-topbar-content
+            @apply col-span-4
 
-        .card
-            @apply grid grid-rows-1
-            @apply bg-red-200
-            @apply rounded-3xl border-black border
-            @apply py-2 px-4
-            h3
-                @apply text-2xl font-bold
+            .search-wrapper
+                @apply col-span-3
 
-        .card.large-col-span
-            @apply col-span-2
-            grid-template-columns: 40% 60%
+                .search-input
+                    @apply w-full
+                    @apply rounded-3xl
+                    @apply text-white
+                    @apply border-none
+                    @apply placeholder-slate-200
+                    @apply px-6
 
-        .card.small-col-span
+                    background-color: rgba(255, 255, 255, 0.2)
+
+            .sort-select-wrapper
+                @apply col-span-1
+
+    .content
+        @apply grid grid-cols-5
+
+        .categories
             @apply col-span-1
-            grid-template-columns: 40% 60%
+            @apply text-white
+
+            .category-item
+                @apply px-8 py-2
+                @apply text-lg
+                @apply cursor-pointer
+
+            .selected
+                @apply font-bold
+
+        .main-content
+            @apply col-span-4
 </style>
