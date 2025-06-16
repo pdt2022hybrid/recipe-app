@@ -9,37 +9,21 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class RecipeController extends Controller
 {
-    public function show(string $recipe_id): \Illuminate\Http\JsonResponse
+    public function show(string $recipe_id): Response
     {
-//        return Inertia::render('Recipe', [
-//            'recipe' => Recipe::query()
-//                ->select('id', 'name', 'description', 'created_at')
-//                ->with([
-//                    'category:id,name',
-//                    'steps:id,title,description',
-//                    'ingredients:id,name,amount,unit',
-//                ])
-//                ->findOrFail($recipe_id),
-//        ]);
-
-        // json response
-        // return response()->json([
-        return response()->json([
+        return Inertia::render('Recipe/Show', [
             'recipe' => Recipe::query()
-                ->select('id', 'name', 'description', 'created_at', 'category_id')
                 ->with([
-                    'category' => function (Relation $query) {
-                        $query->select('id', 'name');
-                    },
+                    'category',
                     'steps' => function (Relation $query) {
-                        $query->select('id', 'recipe_id', 'description');
+                        $query
+                            ->orderBy('step_number');
                     },
                     'ingredients' => function (Relation $query) {
-                        $query->select('id', 'recipe_id', 'ingredient_id', 'amount', 'unit')
-                        ->with(['ingredient' => function (Relation $q) {
-                            $q->select('id', 'name');
-                        }]);
+                        $query
+                            ->with(['ingredient']);
                     },
+                    'tags',
                 ])
                 ->findOrFail($recipe_id),
         ]);

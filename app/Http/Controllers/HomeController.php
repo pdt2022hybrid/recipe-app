@@ -16,11 +16,8 @@ class HomeController extends Controller
     {
         return Inertia::render('Home', [
             'recipe_categories' => RecipeCategory::query()
-                ->select('id', 'name')
                 ->with('recipes', function (Relation $query) {
-                    $query
-                        ->select('id', 'name', 'category_id')
-                        ->limit(25);
+                    $query->limit(25);
                 })
                 ->withCount('recipes')
                 ->get(),

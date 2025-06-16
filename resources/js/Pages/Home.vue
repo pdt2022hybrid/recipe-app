@@ -81,7 +81,7 @@ onMounted(() => {
         <!--                    </h1>-->
         <!--                </div>-->
         <!--                <div class="subtext">-->
-        <!--                    <span>Grammy, let’s cook.</span>-->
+        <!--                    <span>Grammy, let's cook.</span>-->
         <!--                </div>-->
         <!--            </div>-->
         <!--            <div class="image">-->
@@ -124,13 +124,13 @@ onMounted(() => {
                         v-if="selectedCategoryId && searchValue == ''"
                         :recipes="selectedCategory.recipes"
                     />
-                    <div v-else>
-                        <h3>Results from selected category:</h3>
+                    <div v-else class="search-results">
+                        <h3>Výsledky z vybranej kategórie:</h3>
                         <RecipeList
                             v-if="searchResults?.selected_category?.results"
                             :recipes="searchResults.selected_category.results"
                         />
-                        <h3>Results from other categories:</h3>
+                        <h3>Výsledky z ostatných kategórií:</h3>
                         <RecipeList
                             v-if="searchResults?.other_categories?.results"
                             :recipes="searchResults.other_categories.results"
@@ -220,4 +220,9 @@ main
 
         .main-content
             @apply col-span-4
+
+.search-results
+    h3
+        @apply text-white
+        @apply mb-4
 </style>

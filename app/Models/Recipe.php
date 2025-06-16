@@ -37,6 +37,7 @@ class Recipe extends Model
         return $this->belongsTo(RecipeCategory::class, 'category_id');
     }
 
+
     /**
      * @return BelongsTo<User, $this>
      */

@@ -14,11 +14,11 @@ function logout() {
 
 <template>
     <div class="navbar">
-        <Logo />
+        <Logo class="" />
         <nav class="nav">
-            <a>Recepty</a>
-            <a>Diskusia</a>
-            <a>Blog</a>
+            <Link :href="route('home')" class="nav-link">Recepty</Link>
+            <a class="nav-link">Diskusia</a>
+            <a class="nav-link">Blog</a>
         </nav>
         <div class="login-or-user">
             <div v-if="user" class="grid grid-flow-col grid-rows-1 gap-4">
@@ -47,6 +47,13 @@ function logout() {
 
     .nav
         @apply flex flex-row justify-around items-center
+
+        .nav-link
+            @apply text-white
+            @apply cursor-pointer
+            @apply transition-all duration-200
+            @apply opacity-80
+            @apply hover:opacity-100
 
 .login-or-user
     @apply flex flex-row justify-end items-center

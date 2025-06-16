@@ -48,7 +48,7 @@ class RecipeSeeder extends Seeder
                         ->create();
                 }
 
-                for ($i = 0; $i >= rand(1, 5); $i++) {
+                for ($i = 1; $i <= 5; $i++) {
                     RecipeStep::factory()
                         ->for($recipe)
                         ->stepNumber($i)

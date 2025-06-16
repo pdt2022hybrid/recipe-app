@@ -1,7 +1,7 @@
 <template>
     <div class="logo">
         <LogoSVG />
-        <span class="ml-4 text-2xl font-bold">Vareška</span>
+        <span class="ml-4 text-2xl font-bold text-white">Vareška</span>
     </div>
 </template>
 <script>
